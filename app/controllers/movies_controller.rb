@@ -12,13 +12,13 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.all_ratings
-    if params[:ratings] || session[:ratings]
+    unless session[:ratings]
+      session[:ratings] = @all_ratings
+    else
       if params[:ratings] != session[:ratings] && params[:ratings]
         session[:ratings] = params[:ratings]
       end
       @movies = Movie.where(:rating => session[:ratings].keys)
-    else
-      @movies = Movie.all
     end
     if params[:sort_by] || session[:sort_by]
       if params[:sort_by] != session[:sort_by] && params[:sort_by]
