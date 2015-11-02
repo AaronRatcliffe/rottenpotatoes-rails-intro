@@ -11,12 +11,21 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
-    sort = params[:sort_by] || session[:sort_by]
-    if sort == 'title'
-      @movies = @movies.sort_by{|x| x[:title]}
-      elsif sort == 'release_date'
-      @movies = @movies.sort_by{|x| x[:release_date]}
+    @all_ratings = Movie.all_ratings
+    if params[:ratings]
+      @movies = Movie.where(:rating => params[:ratings].keys)
+    else
+      @movies = Movie.all
+    end
+    case params[:sort_by]
+    when 'title'
+      @movies = @movies.sort_by do |movie|
+        movie[:title]
+      end
+    when 'release_date' 
+      @movies = @movies.sort_by do |movie|
+        movie[:release_date]
+      end
     end
   end
 
